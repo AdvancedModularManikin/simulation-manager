@@ -1,1 +1,1 @@
-# simulation-manager
+# AMM - Simulation Manager
