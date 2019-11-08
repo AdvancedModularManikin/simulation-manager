@@ -12,65 +12,56 @@
 
 #include "AMM/Utility.h"
 
-using namespace std;
-using namespace std::chrono;
 
 namespace AMM {
-    class SimulationManager {
+class SimulationManager {
 
-    public:
-        SimulationManager();
+public:
+   SimulationManager();
 
-        // ~SimulationManager() override = default;
+   // TODO:
+   // Remove doWriteTopic.
 
-        /// Sim commands
+   void PublishOperationalDescription();
+   void PublishConfiguration();
 
-        /// Note:
-        /// If doWriteTopic, then write a SimulationControl topic to the publisher.
-        /// This parameter should be false if onNewSimulationControl is calling these methods.
-        ///
-        /// Sim Manager doesn't need to write a SimulationControl topic if it recieved one.
+   void RunSimulation(bool doWriteTopic);
 
-        void PublishOperationalDescription();
-        void PublishConfiguration();
+   void HaltSimulation(bool doWriteTopic);
 
-        void RunSimulation(bool doWriteTopic);
+   void ResetSimulation(bool doWriteTopic);
 
-        void HaltSimulation(bool doWriteTopic);
+   void SaveSimulation(bool doWriteTopic);
 
-        void ResetSimulation(bool doWriteTopic);
+   void Shutdown();
 
-        void SaveSimulation(bool doWriteTopic);
+   // Sim properties
+   void SetSampleRate(int rate);
 
-        void Shutdown();
+   bool IsRunning();
 
-        /// Sim properties
-        void SetSampleRate(int rate);
+   int GetSampleRate();
 
-        bool IsRunning();
+   int GetTickCount();
 
-        int GetSampleRate();
+   void TickLoop();
 
-        int GetTickCount();
+   void onNewSimulationControl(AMM::SimulationControl &simControl, SampleInfo_t *info);
 
-        void TickLoop();
+protected:
+   thread m_thread;
+   mutex m_mutex;
+   bool m_runThread = false;
 
-        void onNewSimulationControl(AMM::SimulationControl &simControl, SampleInfo_t *info);
+   AMM::UUID m_uuid;
 
-    protected:
-        thread m_thread;
-        mutex m_mutex;
-        bool m_runThread = false;
+   std::string moduleName = "AMM_SimulationManager";
+   std::string configFile = "config/sim_manager_amm.xml";
+   DDSManager<SimulationManager> *m_mgr = new DDSManager<SimulationManager>(configFile);
 
-        AMM::UUID m_uuid;
+   int m_tickCount = 0;
+   int m_sampleRate = 50;
 
-        std::string moduleName = "AMM_SimulationManager";
-        std::string configFile = "config/sim_manager_amm.xml";
-        DDSManager<SimulationManager> *m_mgr = new DDSManager<SimulationManager>(configFile);
+};
 
-        int m_tickCount = 0;
-        int m_sampleRate = 50;
-
-    };
-
-}
+} // namespace AMM
