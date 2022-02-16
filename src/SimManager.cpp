@@ -1,7 +1,7 @@
 
 #include "SimulationManager.h"
 
-#include "AMM/BaseLogger.h"
+#include "amm/BaseLogger.h"
 
 using namespace std;
 using namespace std::chrono;

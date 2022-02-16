@@ -10,7 +10,7 @@
 #include <thread>
 #include <chrono>
 
-#include "AMM/Utility.h"
+#include "amm/Utility.h"
 
 
 namespace AMM {
